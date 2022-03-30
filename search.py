@@ -20,7 +20,7 @@ def closest_point(q, space):
     scores[0][q] = 0
     return np.argmax(scores)
 
-space = init_space(n_points=1000)
+space = init_space(n_points=20)
 closest = closest_point(0, space)
 
 lsh(space)

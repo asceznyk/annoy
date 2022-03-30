@@ -3,7 +3,7 @@ import numpy as np
 
 np.random.seed(2)
 
-def lsh(dataset, n_sets=1, n_hyp=10):
+def lsh(dataset, n_sets=10, n_hyp=5):
     dataset = np.array(dataset)
     tables = []
     for s in range(n_sets):
