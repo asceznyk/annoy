@@ -3,9 +3,11 @@ import numpy as np
 
 from sklearn.metrics.pairwise import cosine_similarity
 
+from lsh import *
+
 random.seed(2)
 
-def init_space(n_points=20, dim=40):
+def init_space(n_points=20, dim=2):
     space = []
     for i in range(n_points):
         v = [random.gauss(0, 1) for z in range(dim)] 
@@ -20,7 +22,12 @@ def closest_point(q, space):
 
 space = init_space(n_points=1000)
 closest = closest_point(0, space)
+
+lsh(space)
+
 print(closest)
+
+
 
 
 
