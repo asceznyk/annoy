@@ -1,5 +1,6 @@
-import random
 import numpy as np
+
+from sklearn.metrics.pairwise import cosine_similarity
 
 np.random.seed(2)
 
@@ -20,15 +21,20 @@ def lsh(space, n_sets=10, n_hyp=5):
 
     return tables, planes
 
-def predict(i, space, tables, planes):
-    for s in range(len(tables)):
-        hash_table = tables[s]
-        plane_norms = planes[s]
-        _hash = ''.join((space[i] @ plane_norms.T).astype(int).astype(str))
-        print(_hash)
+def predict(i, space, tables, planes, k=3):
+    space = np.array(space)
+    neighbours = []
+    for hash_table, plane_norms in zip(tables, planes):
+        _hash = ''.join((space[i] @ plane_norms.T > 0).astype(int).astype(str))
+        neighbours.extend([e for e in hash_table[_hash] if e not in neighbours])
 
-
-
+    neighbours = np.array(neighbours)
+    sims = cosine_similarity([space[i]], space[neighbours])[0]
+    ids_scores = { k: v for k,v in zip(neighbours, sims) }
+    del ids_scores[i]
+    ids_scores = dict(sorted(ids_scores.items(), key=lambda item: item[1], reverse=True)[:k])
+    
+    return ids_scores
 
 
 

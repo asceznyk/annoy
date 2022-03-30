@@ -18,14 +18,14 @@ def init_space(n_points=20, dim=2):
 def closest_point(q, space):
     scores = cosine_similarity([space[q]], space)
     scores[0][q] = 0
-    return np.argmax(scores)
+    return scores, np.argmax(scores)
 
 space = init_space(n_points=20)
-closest = closest_point(0, space)
+scores, closest = closest_point(0, space)
 tables, planes = lsh(space)
 
-print(closest)
-print(predict(0))
+print(scores, closest)
+print(predict(0, space, tables, planes))
 
 
 
