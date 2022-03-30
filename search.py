@@ -22,10 +22,10 @@ def closest_point(q, space):
 
 space = init_space(n_points=20)
 closest = closest_point(0, space)
-lsh(space)
+tables, planes = lsh(space)
 
 print(closest)
-
+print(predict(0))
 
 
 
