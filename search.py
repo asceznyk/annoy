@@ -1,33 +1,34 @@
+import time
 import random
+import tracemalloc
 import numpy as np
+
+import pickle
 
 from sklearn.metrics.pairwise import cosine_similarity
 
 from lsh import *
 
-random.seed(2)
+def closest_point(q, space, k=3):
+    scores = {}
+    for p in range(len(space)):
+        scores[p] = cosine_similarity([space[q]], [space[p]])[0][0]
+    scores[q] = 0
+    return dict(sorted(scores.items(), key=lambda item: item[1], reverse=True)[:k]) 
 
-def init_space(n_points=20, dim=2):
-    space = []
-    for i in range(n_points):
-        v = [random.gauss(0, 1) for z in range(dim)] 
-        space.append(v)
+space = pickle.load(open('space.pkl', 'rb'))
+tables = pickle.load(open('tables.pkl', 'rb'))
+planes = pickle.load(open('planes.pkl', 'rb'))
 
-    return space
+top_k = 7
+query = 10 ##feel free to explore!
 
-def closest_point(q, space):
-    scores = cosine_similarity([space[q]], space)
-    scores[0][q] = 0
-    return scores, np.argmax(scores)
+start = time.time()
+print(closest_point(query, space, k=top_k))
+print(time.time() - start)
 
-space = init_space(n_points=20)
-scores, closest = closest_point(0, space)
-tables, planes = lsh(space)
-
-print(scores, closest)
-print(predict(0, space, tables, planes))
-
-
-
+start = time.time()
+print(predict(query, space, tables, planes, k=top_k))
+print(time.time() - start)
 
 
