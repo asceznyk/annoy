@@ -1,3 +1,4 @@
+import sys
 import time
 import random
 import tracemalloc
@@ -21,7 +22,9 @@ tables = pickle.load(open('tables.pkl', 'rb'))
 planes = pickle.load(open('planes.pkl', 'rb'))
 
 top_k = 7
-query = 10 ##feel free to explore!
+query = int(sys.argv[1]) ##feel free to explore!
+
+print(f"finding points closest to {query} ...")
 
 start = time.time()
 print(closest_point(query, space, k=top_k))
