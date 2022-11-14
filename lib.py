@@ -11,9 +11,10 @@ class RandomProjectionLSH(object):
                  vec_space_path: str,
                  n_sets: int,
                  n_bits: int,
-                 load_dir: Union[str, None],
+                 load_dir: Union[str, None] = None,
                  save_dir: Union[str, None] = 'hash_table'):
         self.n_sets = n_sets
+        self.n_bits = n_bits
 
         self.space = KeyedVectors.load_word2vec_format(vec_space_path, binary=True)
         
