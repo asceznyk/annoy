@@ -10,28 +10,31 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from lsh import *
 
-def closest_point(q, space, k=3):
-    scores = {}
-    for p in range(len(space)):
-        scores[p] = cosine_similarity([space[q]], [space[p]])[0][0]
-    scores[q] = 0
-    return dict(sorted(scores.items(), key=lambda item: item[1], reverse=True)[:k]) 
+def main(vec_space_path:str, load_path:str, query:str, top_k:int=7):
+    print(f"finding points closest to {query} ...")
 
-space = pickle.load(open('space.pkl', 'rb'))
-tables = pickle.load(open('tables.pkl', 'rb'))
-planes = pickle.load(open('planes.pkl', 'rb'))
+    space = models.KeyedVectors.load_word2vec_format(vec_space_path, binary=True) 
+    tables = pickle.load(open(f"{load_path}/tables.pkl"))
+    planes = pickle.load(open(f"{load_path}/planes.pkl"))
 
-top_k = 7
-query = int(sys.argv[1]) ##feel free to explore!
+    start = time.time()
+    scores = search(query, space, tables, planes, k=top_k)
+    print(time.time() - start)
 
-print(f"finding points closest to {query} ...")
+    for word, score in scores.items():
+        print(f"word: {word} -> similarity score: {score}")
+    return 
 
-start = time.time()
-print(closest_point(query, space, k=top_k))
-print(time.time() - start)
-
-start = time.time()
-print(predict(query, space, tables, planes, k=top_k))
-print(time.time() - start)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='search function on query')
+    parser.add_argument("--vec_space_path", type=str, required=True, help='vector space to search from')
+    parser.add_argument("--load_dir", type=str, default='./hash_tables', help="directory for loading hyperlpanes and hash tables..")
+    parser.add_argument("--query", type=str, default='', help="query for search")
+    
+    to_args = {}
+    args = parser.parse_args()
+    for k in args.__dict__:
+        to_args[k] = args.__dict__[k]
+    main(**to_args)
 
 
