@@ -1,8 +1,8 @@
-import tqdm
 import pickle
 
 import numpy as np
 
+from tqdm import tqdm
 from typing import Union
 from gensim.models import KeyedVectors
 from sklearn.metrics.pairwise import cosine_similarity
