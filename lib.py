@@ -30,6 +30,12 @@ class RandomProjectionLSH(object):
         self.tables = pickle.load(open(f"{load_dir}/tables.pkl", 'rb'))
         self.planes = pickle.load(open(f"{load_dir}/planes.pkl", 'rb'))
 
+    def save_hash_tables(self):
+        if self.save_dir is not None:
+            if os.path.exists(self.save_dir): os.mkdir(self.save_dir)
+            pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
+            pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
+
     def build_hash_tables(self): 
         for s in tqdm_notebook(range(self.n_sets), desc="sets"):
             hash_table = {}
@@ -41,12 +47,6 @@ class RandomProjectionLSH(object):
 
             self.tables.append(hash_table)
             self.planes.append(plane_norms)
-
-    def save_hash_tables(self):
-        if self.save_dir is not None:
-            if os.path.exists(self.save_dir): os.mkdir(self.save_dir)
-            pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
-            pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
 
     def search(self, query:str, k:int=10): 
         neighbours = []
