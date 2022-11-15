@@ -11,8 +11,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 class RandomProjectionLSH(object):
     def __init__(self, 
                  vec_space_path: str,
-                 n_sets: int,
-                 n_bits: int,
+                 n_sets: int = 10,
+                 n_bits: int = 10,
                  load_dir: Union[str, None] = None,
                  save_dir: Union[str, None] = 'hash_table'):
         self.n_sets = n_sets
@@ -27,6 +27,7 @@ class RandomProjectionLSH(object):
         else: self.build_hash_tables()
 
     def load_hash_tables(self):
+        print(f'loading from dir.. {self.load_dir}')
         self.tables = pickle.load(open(f"{self.load_dir}/tables.pkl", 'rb'))
         self.planes = pickle.load(open(f"{self.load_dir}/planes.pkl", 'rb'))
 
