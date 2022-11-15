@@ -19,7 +19,8 @@ class RandomProjectionLSH(object):
         self.n_bits = n_bits
 
         self.space = KeyedVectors.load_word2vec_format(vec_space_path, binary=True)
-        
+
+        self.load_dir = load_dir
         self.save_dir = save_dir
         self.tables, self.planes = [], []
         if load_dir is not None: self.tables, self.planes = self.load_hash_tables()
@@ -41,8 +42,9 @@ class RandomProjectionLSH(object):
             self.tables.append(hash_table)
             self.planes.append(plane_norms)
 
+    def save_hash_tables(self):
         if self.save_dir is not None:
-            if os.path.exists(self.save_dir): os.makedirs(self.save_dir)
+            if os.path.exists(self.save_dir): os.mkdir(self.save_dir)
             pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
             pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
 
