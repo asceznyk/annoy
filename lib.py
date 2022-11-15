@@ -32,7 +32,7 @@ class RandomProjectionLSH(object):
 
     def save_hash_tables(self):
         if self.save_dir is not None:
-            if os.path.exists(self.save_dir): os.mkdir(self.save_dir)
+            if not os.path.exists(self.save_dir): os.mkdir(self.save_dir)
             pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
             pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
 
