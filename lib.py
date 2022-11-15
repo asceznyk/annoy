@@ -41,6 +41,7 @@ class RandomProjectionLSH(object):
             self.planes.append(plane_norms)
 
         if self.save_dir is not None:
+            os.mkdir(self.save_dir, exist_ok=True)
             pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
             pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
 
