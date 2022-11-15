@@ -23,13 +23,14 @@ class RandomProjectionLSH(object):
         self.load_dir = load_dir
         self.save_dir = save_dir
         self.tables, self.planes = [], []
-        if load_dir is not None: self.tables, self.planes = self.load_hash_tables()
+        if load_dir is not None: self.load_hash_tables()
         else: self.build_hash_tables()
 
     def load_hash_tables(self):
         print(f'loading from dir.. {self.load_dir}')
         self.tables = pickle.load(open(f"{self.load_dir}/tables.pkl", 'rb'))
         self.planes = pickle.load(open(f"{self.load_dir}/planes.pkl", 'rb'))
+        print('successfully loaded!')
 
     def save_hash_tables(self):
         if self.save_dir is not None:
