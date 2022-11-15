@@ -19,11 +19,10 @@ class RandomProjectionLSH(object):
 
         self.space = KeyedVectors.load_word2vec_format(vec_space_path, binary=True)
         
+        self.save_dir = save_dir
         self.tables, self.planes = [], []
-        if load_dir is not None:
-            self.tables, self.planes = self.load_hash_tables()
-
-        self.save_dir = save_dir 
+        if load_dir is not None: self.tables, self.planes = self.load_hash_tables()
+        else: self.build_hash_tables()
 
     def load_hash_tables(self):
         self.tables = pickle.load(open(f"{load_dir}/tables.pkl"))
@@ -42,10 +41,10 @@ class RandomProjectionLSH(object):
             self.planes.append(plane_norms)
 
         if self.save_dir is not None:
-            pickle.dump(self.tables, open(f"{save_dir}/tables.pkl", 'wb'))
-            pickle.dump(self.planes, open(f"{save_dir}/planes.pkl", 'wb'))
+            pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
+            pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
 
-    def search(query:str, k:int=10): 
+    def search(self, query:str, k:int=10): 
         neighbours = []
         for hash_table, plane_norms in zip(self.tables, self.planes):
             _hash = ''.join((self.space[query] @ plane_norms.T > 0).astype(int).astype(str))
