@@ -23,8 +23,12 @@ class RandomProjectionLSH(object):
         self.load_dir = load_dir
         self.save_dir = save_dir
         self.tables, self.planes = [], []
-        if load_dir is not None: self.load_hash_tables()
-        else: self.build_hash_tables()
+        if load_dir is not None: 
+            self.load_hash_tables()
+        else: 
+            self.build_hash_tables()
+            if save_dir is not None:
+                self.save_hash_tables()
 
     def load_hash_tables(self):
         print(f'loading from dir.. {self.load_dir}')
