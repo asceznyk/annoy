@@ -57,7 +57,7 @@ class RandomProjectionLSH(object):
 
     def search(self, query:str, k:int=10): 
         neighbours = []
-        for hash_table, plane_norms in zip(self.tables, self.planes):
+        for hash_table, plane_norms in tqdm_notebook(zip(self.tables, self.planes), total=len(self.tables)):
             _hash = ''.join((self.space[query] @ plane_norms.T > 0).astype(int).astype(str))
             neighbours.extend([e for e in hash_table[_hash] if e not in neighbours])
 
