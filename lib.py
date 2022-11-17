@@ -59,8 +59,9 @@ class RandomProjectionLSH(object):
         neighbours = []
         for hash_table, plane_norms in tqdm_notebook(zip(self.tables, self.planes), total=len(self.tables)):
             _hash = ''.join((self.space[query] @ plane_norms.T > 0).astype(int).astype(str))
-            neighbours.extend([e for e in hash_table[_hash] if e not in neighbours])
+            neighbours.extend(hash_table[_hash])
 
+        neighbours = list(set(neighbours))
         sims = cosine_similarity([self.space[query]], self.space[neighbours])[0]
         scores = { k: v for k,v in zip(neighbours, sims) }
         del scores[query]
