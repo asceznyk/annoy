@@ -42,7 +42,7 @@ class RandomProjectionLSH(object):
         if not os.path.exists(self.save_dir): os.mkdir(self.save_dir)
         pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
         pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
-        pickle.dump(self.intercepts, open(f"{self.save_dir}/intercepts.pkl", 'rb'))
+        pickle.dump(self.intercepts, open(f"{self.save_dir}/intercepts.pkl", 'wb'))
         print('successfully saved!')
 
     def _build_plane_norms(self):
