@@ -47,10 +47,10 @@ class RandomProjectionLSH(object):
         for s in tqdm_notebook(range(self.n_sets), desc="sets"):
             hash_table = {}
             plane_norms = np.random.rand(self.n_bits, self.space.vector_size) - 0.5
-            for word in tqdm_notebook(list(self.space.vocab.keys()), desc="words"):
-                _hash = ''.join((self.space[word] @ plane_norms.T > 0).astype(int).astype(str))
+            for _id in tqdm_notebook(list(self.space.vocab.keys()), desc="ids"):
+                _hash = ''.join((self.space[_id] @ plane_norms.T > 0).astype(int).astype(str))
                 if _hash not in hash_table.keys(): hash_table[_hash] = []
-                hash_table[_hash].append(word)
+                hash_table[_hash].append(_id)
 
             self.tables.append(hash_table)
             self.planes.append(plane_norms)
