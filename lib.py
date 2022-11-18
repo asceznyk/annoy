@@ -57,7 +57,7 @@ class RandomProjectionLSH(object):
             hash_table = {}
             plane_norms, intercepts = self._build_plane_norms() 
             for _id in tqdm_notebook(list(self.space.vocab.keys()), desc="ids"):
-                _hash = ''.join((self._criterion(self.space[_id], plane_norms.T, intercepts) > 0).astype(int).astype(str))
+                _hash = ''.join((self._criterion(self.space[_id], plane_norms, intercepts) > 0).astype(int).astype(str))
                 if _hash not in hash_table.keys(): hash_table[_hash] = []
                 hash_table[_hash].append(_id)
 
