@@ -47,7 +47,7 @@ class RandomProjectionLSH(object):
 
     def _build_plane_norms(self):
         vecs = self.space.vectors[np.random.randint(len(self.space.vectors), size=(2 * self.n_bits))]
-        difs = vecs[1::2] - vecs[::2]
+        diffs = vecs[1::2] - vecs[::2]
         return diffs, -np.diag(diffs @ ((vecs[1::2]+vecs[::2])/2).T)
 
     def _criterion(self, a, b, c): return ((a @ b.T) + c)  
