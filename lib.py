@@ -48,7 +48,7 @@ class RandomProjectionLSH(object):
     def _build_plane_norms(self):
         vecs = self.space.vectors[np.random.randint(len(self.space.vectors), size=(2 * self.n_bits))]
         diffs = vecs[1::2] - vecs[::2]
-        return diffs #-np.diag(diffs @ ((vecs[1::2]+vecs[::2])/2).T)
+        return diffs, _ #-np.diag(diffs @ ((vecs[1::2]+vecs[::2])/2).T)
 
     def _criterion(self, a, b): return a @ b.T #((a @ b.T) + c)  
 
@@ -63,7 +63,7 @@ class RandomProjectionLSH(object):
 
             self.tables.append(hash_table)
             self.planes.append(plane_norms)
-            self.intercepts.append(intercepts)
+            #self.intercepts.append(intercepts)
 
     def search(self, query:str, k:int=10): 
         neighbours = []
