@@ -22,7 +22,7 @@ class RandomProjectionLSH(object):
 
         self.load_dir = load_dir
         self.save_dir = save_dir
-        self.tables, self.planes, self.intercepts = [], [], []
+        self.tables, self.planes = [], []
         if load_dir is not None: 
             self.load_hash_tables()
         else: 
@@ -34,7 +34,6 @@ class RandomProjectionLSH(object):
         print(f'loading from dir.. {self.load_dir}')
         self.tables = pickle.load(open(f"{self.load_dir}/tables.pkl", 'rb'))
         self.planes = pickle.load(open(f"{self.load_dir}/planes.pkl", 'rb'))
-        #self.intercepts = pickle.load(open(f"{self.load_dir}/intercepts.pkl", 'rb'))
         print('successfully loaded!')
 
     def save_hash_tables(self):
@@ -42,33 +41,25 @@ class RandomProjectionLSH(object):
         if not os.path.exists(self.save_dir): os.mkdir(self.save_dir)
         pickle.dump(self.tables, open(f"{self.save_dir}/tables.pkl", 'wb'))
         pickle.dump(self.planes, open(f"{self.save_dir}/planes.pkl", 'wb'))
-        #pickle.dump(self.intercepts, open(f"{self.save_dir}/intercepts.pkl", 'wb'))
         print('successfully saved!')
-
-    def _build_plane_norms(self):
-        vecs = self.space.vectors[np.random.randint(len(self.space.vectors), size=(2 * self.n_bits))]
-        diffs = vecs[1::2] - vecs[::2]
-        return diffs, None #-np.diag(diffs @ ((vecs[1::2]+vecs[::2])/2).T)
-
-    def _criterion(self, a, b): return a @ b.T #((a @ b.T) + c)  
 
     def build_hash_tables(self): 
         for s in tqdm_notebook(range(self.n_sets), desc="sets"):
             hash_table = {}
-            plane_norms, intercepts = self._build_plane_norms() 
+            vecs = self.space.vectors[np.random.randint(len(self.space.vectors), size=(2 * self.n_bits))]
+            plane_norms = vecs[1::2] - vecs[::2] 
             for _id in tqdm_notebook(list(self.space.vocab.keys()), desc="ids"):
-                _hash = ''.join((self._criterion(self.space[_id], plane_norms) > 0).astype(int).astype(str))
+                _hash = ''.join((self.space[_id] @ plane_norms.T > 0).astype(int).astype(str))
                 if _hash not in hash_table.keys(): hash_table[_hash] = []
                 hash_table[_hash].append(_id)
 
             self.tables.append(hash_table)
             self.planes.append(plane_norms)
-            #self.intercepts.append(intercepts)
 
     def search(self, query:str, k:int=10): 
         neighbours = []
         for hash_table, plane_norms in tqdm_notebook(zip(self.tables, self.planes), total=len(self.tables)):
-            _hash = ''.join((self._criterion(self.space[query], plane_norms) > 0).astype(int).astype(str))
+            _hash = ''.join((self.space[query] @ plane_norms.T > 0).astype(int).astype(str))
             neighbours.extend(hash_table[_hash])
 
         neighbours = list(set(neighbours))
