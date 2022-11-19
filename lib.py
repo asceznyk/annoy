@@ -3,7 +3,7 @@ import pickle
 
 import numpy as np
 
-from tqdm import tqdm_notebook
+from tqdm import tqdm
 from typing import Union
 from gensim.models import KeyedVectors
 from sklearn.metrics.pairwise import cosine_similarity
@@ -44,11 +44,11 @@ class RandomProjectionLSH(object):
         print('successfully saved!')
 
     def build_hash_tables(self): 
-        for s in tqdm_notebook(range(self.n_sets), desc="sets"):
+        for s in tqdm(range(self.n_sets), desc="sets"):
             hash_table = {}
             vecs = self.space.vectors[np.random.randint(len(self.space.vectors), size=(2 * self.n_bits))]
             plane_norms = vecs[1::2] - vecs[::2] 
-            for _id in tqdm_notebook(list(self.space.vocab.keys()), desc="ids"):
+            for _id in tqdm(list(self.space.vocab.keys()), desc="ids"):
                 _hash = ''.join((self.space[_id] @ plane_norms.T > 0).astype(int).astype(str))
                 if _hash not in hash_table.keys(): hash_table[_hash] = []
                 hash_table[_hash].append(_id)
@@ -58,7 +58,7 @@ class RandomProjectionLSH(object):
 
     def search(self, query:str, k:int=10): 
         neighbours = []
-        for hash_table, plane_norms in tqdm_notebook(zip(self.tables, self.planes), total=len(self.tables)):
+        for hash_table, plane_norms in tqdm(zip(self.tables, self.planes), total=len(self.tables)):
             _hash = ''.join((self.space[query] @ plane_norms.T > 0).astype(int).astype(str))
             neighbours.extend(hash_table[_hash])
 
